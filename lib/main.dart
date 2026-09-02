@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,6 +15,7 @@ class MeuAppCongregacao extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Sans-Serif',
         scaffoldBackgroundColor: const Color(0xFFF2EFE9),
+        primaryColor: const Color(0xFF1E2D4A),
       ),
       home: const TelaPrincipal(),
     );
@@ -35,11 +35,11 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
 
   final List<Map<String, dynamic>> abas = [
     {'titulo': 'Territórios', 'icone': Icons.map},
-    {'titulo': 'S Campo', 'icone': Icons.menu_book},
+    {'titulo': 'S. Campo', 'icone': Icons.menu_book},
     {'titulo': 'Eventos', 'icone': Icons.calendar_month},
     {'titulo': 'Dirigentes', 'icone': Icons.person},
-    {'titulo': 'T Publico', 'icone': Icons.store},
-    {'titulo': 'L Testemunho', 'icone': Icons.collections_bookmark},
+    {'titulo': 'T. Público', 'icone': Icons.store},
+    {'titulo': 'L. Testemunho', 'icone': Icons.collections_bookmark},
   ];
 
   @override
@@ -48,7 +48,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
       body: SafeArea(
         child: Column(
           children: [
-            // PAINEL SUPERIOR (AZUL ESCURO)
+            // Painel Superior (Header)
             Container(
               decoration: const BoxDecoration(
                 color: Color(0xFF1E2D4A),
@@ -57,7 +57,6 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: Column(
                 children: [
-                  // Título e Ícone do Cadeado
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
@@ -65,7 +64,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                       children: const [
                         SizedBox(width: 24),
                         Text(
-                          'Território de Congregação',
+                          'Gestão de Congregação',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -78,7 +77,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Barra de Abas Rolável
+                  // Navegação das Abas Superiores
                   SizedBox(
                     height: 75,
                     child: ListView.builder(
@@ -94,7 +93,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                             });
                           },
                           child: Container(
-                            width: 85,
+                            width: 90,
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             decoration: BoxDecoration(
                               color: isSelected ? Colors.white : const Color(0xFFE2E8F0),
@@ -132,61 +131,18 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
               ),
             ),
 
-            // ÁREA DE CONTEÚDO PRINCIPAL
+            // Conteúdo Dinâmico com base na aba escolhida
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE9E5DC),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.arrow_back, color: Color(0xFF334155)),
-                          const SizedBox(width: 8),
-                          Text(
-                            'T.2 - ST Terezinha 2',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF1E2D4A),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE1DDD3),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.create_new_folder,
-                              size: 48,
-                              color: Color(0xFF64748B),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                child: _construirConteudoAba(),
               ),
             ),
           ],
         ),
       ),
 
-      // MENU INFERIOR DE NAVEGAÇÃO
+      // Menu Inferior
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: menuInferiorIndex,
         onTap: (index) {
@@ -198,12 +154,186 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
         selectedItemColor: const Color(0xFF1E2D4A),
         unselectedItemColor: Colors.grey,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Meu Perfil'),
-          BottomNavigationBarItem(icon: Icon(Icons.email), label: 'Mensagens'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Configurações'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+          BottomNavigationBarItem(icon: Icon(Icons.email), label: 'Avisos'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Ajustes'),
         ],
       ),
     );
   }
+
+  Widget _construirConteudoAba() {
+    switch (abaSelecionada) {
+      case 0:
+        return _buildAbaTerritorios();
+      case 1:
+        return _buildAbaServicoCampo();
+      case 2:
+        return _buildAbaEventos();
+      case 3:
+        return _buildAbaDirigentes();
+      case 4:
+        return _buildAbaTestemunhoPublico();
+      case 5:
+        return _buildAbaLivretoTestemunho();
+      default:
+        return _buildAbaTerritorios();
+    }
+  }
+
+  // 1. ABA TERRITÓRIOS
+  Widget _buildAbaTerritorios() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Territórios Designados',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E2D4A)),
+        ),
+        const SizedBox(height: 12),
+        Expanded(
+          child: ListView(
+            children: [
+              _itemCartaoTerritorio('T.01 - Centro Norte', 'Trabalhado há 12 dias', true),
+              _itemCartaoTerritorio('T.02 - ST Terezinha 2', 'Em andamento', false),
+              _itemCartaoTerritorio('T.03 - Vila Operária', 'Disponível', true),
+              _itemCartaoTerritorio('T.04 - Jardim das Flores', 'Trabalhado há 30 dias', false),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _itemCartaoTerritorio(String nome, String status, bool concluido) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        leading: Icon(
+          concluido ? Icons.check_circle : Icons.map_outlined,
+          color: concluido ? Colors.green : Colors.amber.shade800,
+        ),
+        title: Text(nome, style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(status),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        onTap: () {},
+      ),
+    );
+  }
+
+  // 2. ABA SERVIÇO DE CAMPO
+  Widget _buildAbaServicoCampo() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Relatório Diário de Campo', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E2D4A))),
+            const SizedBox(height: 16),
+            const TextField(decoration: InputDecoration(labelText: 'Horas Dedicadas', border: OutlineInputBorder())),
+            const SizedBox(height: 12),
+            const TextField(decoration: InputDecoration(labelText: 'Publicações Entregues', border: OutlineInputBorder())),
+            const SizedBox(height: 12),
+            const TextField(decoration: InputDecoration(labelText: 'Revisitas Feitas', border: OutlineInputBorder())),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E2D4A)),
+                onPressed: () {},
+                child: const Text('Salvar Relatório', style: TextStyle(color: Colors.white)),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 3. ABA EVENTOS
+  Widget _buildAbaEventos() {
+    return ListView(
+      children: const [
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.event, color: Color(0xFF1E2D4A)),
+            title: Text('Reunião de Saída de Campo'),
+            subtitle: Text('Sábado às 09:00 - Salão do Reino'),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.groups, color: Color(0xFF1E2D4A)),
+            title: Text('Visita do Superintendente'),
+            subtitle: Text('Próxima semana - Programação Especial'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // 4. ABA DIRIGENTES
+  Widget _buildAbaDirigentes() {
+    return ListView(
+      children: const [
+        Card(
+          child: ListTile(
+            leading: CircleAvatar(child: Text('A')),
+            title: Text('Irmão Antonio'),
+            subtitle: Text('Dirigente - Grupo 01'),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: CircleAvatar(child: Text('C')),
+            title: Text('Irmão Carlos'),
+            subtitle: Text('Dirigente - Grupo 02'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // 5. ABA TESTEMUNHO PÚBLICO
+  Widget _buildAbaTestemunhoPublico() {
+    return ListView(
+      children: const [
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.storefront, color: Colors.indigo),
+            title: Text('Ponto 1: Praça Central'),
+            subtitle: Text('09:00 às 11:00 - Célia / Roberto'),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.storefront, color: Colors.indigo),
+            title: Text('Ponto 2: Estação de Trem'),
+            subtitle: Text('14:00 às 16:00 - Vago'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // 6. ABA LIVRETO DE TESTEMUNHO
+  Widget _buildAbaLivretoTestemunho() {
+    return ListView(
+      children: const [
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.menu_book, color: Colors.brown),
+            title: Text('Livreto de Abordagens'),
+            subtitle: Text('Sugestões de conversas e temas bíblicos'),
+          ),
+        ),
+      ],
+    );
+  }
 }
+
+
